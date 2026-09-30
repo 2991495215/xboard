@@ -35,6 +35,13 @@ jobs:
           php -l app/Http/Controllers/V1/User/ServerController.php
           php -l app/Http/Resources/NodeResource.php
           php -l app/Http/Routes/V1/UserRoute.php
+          php -l app/Http/Routes/V1/GuestRoute.php
+          php -l app/Http/Controllers/V1/Guest/ServerController.php
+          php -l app/Http/Controllers/V1/User/KnowledgeController.php
+          php -l plugins/Waffo/Plugin.php
+          php -l plugins/Cryptomus/Plugin.php
+          php tests/guest_knowledge.php
+          node --check waffo-bridge/server.mjs
           php -r 'require "app/Services/OnlineUserService.php"; $ids = App\Services\OnlineUserService::extractUserIds(["x_USER_ONLINE_CONN_hysteria_93_13", "x_USER_ONLINE_CONN_vmess_1_1", "x_USER_ONLINE_CONN_anytls_2_13", "invalid"]); if ($ids !== [1, 13]) { fwrite(STDERR, json_encode($ids)); exit(1); }'
 
       - name: Set up QEMU

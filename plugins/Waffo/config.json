@@ -1,0 +1,8 @@
+{
+  "name": "Waffo",
+  "code": "waffo",
+  "type": "payment",
+  "version": "1.0.0",
+  "description": "Waffo Pancake payment gateway for XBoard",
+  "author": "trent30"
+}

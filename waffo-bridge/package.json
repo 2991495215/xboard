@@ -1,0 +1,12 @@
+{
+  "name": "zinc-waffo-bridge",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "check": "node --check server.mjs"
+  },
+  "dependencies": {
+    "@waffo/pancake-ts": "0.25.0"
+  }
+}

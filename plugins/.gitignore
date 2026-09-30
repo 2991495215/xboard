@@ -1,2 +1,10 @@
 *
 !.gitignore
+!Waffo/
+!Waffo/Plugin.php
+!Waffo/config.json
+!Waffo/README.md
+!Cryptomus/
+!Cryptomus/Plugin.php
+!Cryptomus/config.json
+!Cryptomus/README.md

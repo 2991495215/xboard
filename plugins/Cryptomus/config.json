@@ -1,0 +1,8 @@
+{
+  "name": "Cryptomus",
+  "code": "cryptomus",
+  "type": "payment",
+  "version": "1.0.0",
+  "description": "Cryptomus payment gateway for XBoard",
+  "author": "trent30"
+}

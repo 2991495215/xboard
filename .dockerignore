@@ -24,3 +24,6 @@ storage/laravels.conf
 storage/laravels.pid
 storage/laravels-timer-process.pid
 /frontend
+waffo-bridge/.env*
+waffo-bridge/secrets
+waffo-bridge/node_modules

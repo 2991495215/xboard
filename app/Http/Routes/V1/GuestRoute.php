@@ -4,7 +4,9 @@ namespace App\Http\Routes\V1;
 use App\Http\Controllers\V1\Guest\CommController;
 use App\Http\Controllers\V1\Guest\PaymentController;
 use App\Http\Controllers\V1\Guest\PlanController;
+use App\Http\Controllers\V1\Guest\ServerController;
 use App\Http\Controllers\V1\Guest\TelegramController;
+use App\Http\Controllers\V1\User\KnowledgeController;
 use Illuminate\Contracts\Routing\Registrar;
 
 class GuestRoute
@@ -16,6 +18,9 @@ class GuestRoute
         ], function ($router) {
             // Plan
             $router->get('/plan/fetch', [PlanController::class, 'fetch']);
+            // Public browsing
+            $router->get('/server/fetch', [ServerController::class, 'fetch']);
+            $router->get('/knowledge/fetch', [KnowledgeController::class, 'fetch']);
             // Telegram
             $router->post('/telegram/webhook', [TelegramController::class, 'webhook']);
             // Payment

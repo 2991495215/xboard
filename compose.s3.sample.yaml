@@ -1,0 +1,49 @@
+# Copy to compose.yaml and select a verified image tag before deploying.
+services:
+  xboard:
+    image: ${XBOARD_IMAGE:-ghcr.io/2991495215/trent30-xboard:sha-6d7df56}
+    restart: unless-stopped
+    network_mode: host
+    cpus: "2.0"
+    mem_limit: 1g
+    volumes:
+      - ./.env:/www/.env
+      - ./.docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./.docker/.data/:/www/.docker/.data
+      - ./storage/logs:/www/storage/logs
+      - ./storage/theme:/www/storage/theme
+      - ./plugins:/www/plugins
+      - ./config/horizon.php:/www/config/horizon.php:ro
+      - ./app/Services/PaymentService.php:/www/app/Services/PaymentService.php:ro
+      - ./app/Http/Routes/V1/GuestRoute.php:/www/app/Http/Routes/V1/GuestRoute.php:ro
+      - ./app/Http/Controllers/V1/User/KnowledgeController.php:/www/app/Http/Controllers/V1/User/KnowledgeController.php:ro
+      - ./app/Http/Controllers/V1/Guest/ServerController.php:/www/app/Http/Controllers/V1/Guest/ServerController.php:ro
+      - redis-data:/data
+    environment:
+      - RESOURCE_PROFILE=minimal
+      - ENABLE_HORIZON=true
+      - docker=true
+    post_start:
+      - command: >-
+          sh -c 'set -eu; target=/www/public/theme/Xboard; staging=/www/public/theme/.Xboard-sync; rm -rf "$$staging"; mkdir -p "$$staging"; cp -a /www/storage/theme/Xboard/. "$$staging"/; test -s "$$staging/index.html"; test -s "$$staging/dashboard.blade.php"; rm -rf "$$target"; mv "$$staging" "$$target"; chown -R www:www "$$target"'
+        user: root
+  waffo-bridge:
+    build: ./waffo-bridge
+    restart: unless-stopped
+    network_mode: host
+    cpus: "0.25"
+    mem_limit: 128m
+    env_file: ./waffo-bridge/.env
+    read_only: true
+    tmpfs:
+      - /tmp
+    volumes:
+      - ./waffo-bridge/secrets/private-key.pem:/run/secrets/waffo-private-key:ro
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:18792/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+volumes:
+  redis-data:

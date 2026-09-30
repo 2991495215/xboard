@@ -19,6 +19,12 @@
 }
 
 :{$CADDY_LISTEN_PORT:7001} {
+	@terms path /terms /terms/
+	rewrite @terms /theme/Xboard/legal/terms.html
+
+	@privacy path /privacy /privacy/
+	rewrite @privacy /theme/Xboard/legal/privacy.html
+
 	@ws path /ws
 	reverse_proxy @ws 127.0.0.1:{$WS_PORT:8076}
 

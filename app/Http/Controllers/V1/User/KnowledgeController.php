@@ -80,16 +80,16 @@ class KnowledgeController extends Controller
         return Knowledge::select($select)->where('show', 1);
     }
 
-    private function processKnowledgeContent(array $knowledge, User $user): array
+    private function processKnowledgeContent(array $knowledge, ?User $user): array
     {
         if (!isset($knowledge['body'])) {
             return $knowledge;
         }
 
-        if (!$this->userService->isAvailable($user)) {
+        if (!$user || !$this->userService->isAvailable($user)) {
             $this->formatAccessData($knowledge['body']);
         }
-        $subscribeUrl = Helper::getSubscribeUrl($user['token']);
+        $subscribeUrl = $user ? Helper::getSubscribeUrl($user['token']) : '';
         $knowledge['body'] = $this->replacePlaceholders($knowledge['body'], $subscribeUrl);
 
         return $knowledge;
