@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/png" href="./images/txz.png?v=0.4.1">
+    <title>%VUE_APP_TITLE%</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        try {
+            const theme = localStorage.getItem('theme');
+            document.documentElement.classList.toggle('dark-theme', theme ? theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches);
+        } catch (_) {}
+    </script>
+
+    <style>
+        @media (min-width: 769px) {
+            html, body, div, main, section, article, aside, nav {
+                scrollbar-width: none !important;
+                -ms-overflow-style: none !important;
+            }
+
+            ::-webkit-scrollbar, ::-webkit-scrollbar-button, ::-webkit-scrollbar-track, ::-webkit-scrollbar-track-piece, ::-webkit-scrollbar-thumb, ::-webkit-scrollbar-corner, ::-webkit-resizer {
+                display: none !important;
+                width: 0 !important;
+                height: 0 !important;
+                background: transparent !important;
+            }
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        @media (min-width: 769px) {
+            * {
+                scrollbar-width: none !important;
+                -ms-overflow-style: none !important;
+            }
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden;
+            background-color: #171A1D;
+        }
+
+        body {
+            display: flex;
+            min-height: 100%;
+            height: auto;
+            flex-direction: column;
+        }
+
+        #app {
+            width: 100%;
+            height: auto;
+            min-height: 100vh;
+            flex: 1 0 auto;
+            background-color: #171A1D;
+        }
+
+        html.preloader-active, body.preloader-active {
+            overflow: hidden !important;
+        }
+
+        .public-compliance-footer {
+            flex: 0 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 16px 10px;
+            color: rgba(74, 85, 99, 0.62);
+            font: 10px/1.4 Inter, sans-serif;
+            text-align: left;
+            pointer-events: none;
+            transition: color 0.2s ease;
+        }
+
+        .public-compliance-footer[hidden] {
+            display: none !important;
+        }
+
+        .public-compliance-footer a {
+            color: inherit;
+            text-decoration: none;
+            pointer-events: auto;
+        }
+
+        .public-compliance-footer .legal-link {
+            border: 0;
+            padding: 0;
+            background: none;
+            color: inherit;
+            font: inherit;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        .public-compliance-footer a:hover,
+        .public-compliance-footer .legal-link:hover {
+            text-decoration: underline;
+        }
+
+        .legal-dialog {
+            position: fixed;
+            inset: 0;
+            margin: auto;
+            box-sizing: border-box;
+            width: min(760px, calc(100vw - 24px));
+            max-height: min(82vh, 760px);
+            border: 1px solid rgba(20, 35, 55, 0.14);
+            border-radius: 8px;
+            padding: 0;
+            background: #fff;
+            color: #27313b;
+            box-shadow: 0 18px 60px rgba(15, 23, 42, 0.24);
+        }
+
+        .legal-dialog::backdrop {
+            background: rgba(15, 23, 42, 0.48);
+            backdrop-filter: blur(2px);
+        }
+
+        .legal-dialog-header {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(20, 35, 55, 0.1);
+            background: inherit;
+        }
+
+        .legal-dialog-header h2 {
+            margin: 0;
+            font: 600 20px/1.3 Inter, sans-serif;
+        }
+
+        .legal-dialog-close {
+            width: 32px;
+            height: 32px;
+            flex: 0 0 32px;
+            border: 0;
+            border-radius: 6px;
+            background: rgba(20, 35, 55, 0.07);
+            color: inherit;
+            font: 24px/1 sans-serif;
+            cursor: pointer;
+        }
+
+        .legal-dialog-content {
+            max-height: calc(min(82vh, 760px) - 69px);
+            overflow: auto;
+            padding: 20px;
+            font: 14px/1.72 Inter, sans-serif;
+        }
+
+        .legal-dialog-content .legal-meta {
+            margin: 0 0 12px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .legal-dialog-content .legal-intro {
+            margin: 0 0 20px;
+            padding: 12px 14px;
+            border-left: 3px solid #3d64cf;
+            background: rgba(61, 100, 207, 0.06);
+        }
+
+        .legal-dialog-content h3 {
+            margin: 20px 0 7px;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .legal-dialog-content p {
+            margin: 0;
+        }
+
+        body.dark-theme .legal-dialog {
+            border-color: rgba(255, 255, 255, 0.12);
+            background: #202428;
+            color: #e7ebef;
+        }
+
+        body.dark-theme .legal-dialog-header {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-theme .legal-dialog-close {
+            background: rgba(255, 255, 255, 0.09);
+        }
+
+        body.dark-theme .legal-dialog-content .legal-meta {
+            color: #aeb7c0;
+        }
+
+        body.dark-theme .legal-dialog-content .legal-intro {
+            border-left-color: #88a7ff;
+            background: rgba(136, 167, 255, 0.08);
+        }
+
+        body.dark-theme .public-compliance-footer {
+            color: rgba(184, 192, 199, 0.58);
+        }
+
+        .public-compliance-footer:hover {
+            color: rgba(74, 85, 99, 0.88);
+        }
+
+        body.dark-theme .public-compliance-footer:hover {
+            color: rgba(184, 192, 199, 0.86);
+        }
+
+        .app-boot-state {
+            position: fixed;
+            inset: 0;
+            z-index: 2147483000;
+            min-height: 100vh;
+            background: #f3f6fb;
+            transition: opacity 0.18s ease;
+            display: grid;
+            place-items: center;
+            box-sizing: border-box;
+            padding: 24px;
+            color: #30343b;
+            font: 14px/1.6 Inter, sans-serif;
+            text-align: center;
+        }
+
+        .app-boot-card {
+            width: min(360px, calc(100vw - 48px));
+            box-sizing: border-box;
+            padding: 28px 24px;
+            border: 1px solid rgba(15, 23, 42, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 18px 50px rgba(15, 23, 42, 0.12);
+        }
+
+        .app-boot-spinner {
+            width: 28px;
+            height: 28px;
+            margin: 0 auto 16px;
+            border: 3px solid rgba(15, 23, 42, 0.14);
+            border-top-color: #8ee8ae;
+            border-radius: 50%;
+            animation: app-boot-spin 0.8s linear infinite;
+        }
+
+        .app-boot-title {
+            margin: 0 0 4px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .app-boot-detail {
+            margin: 0;
+            color: #667085;
+        }
+
+        html.dark-theme .app-boot-state {
+            background: #181a1b;
+            color: #e7ebef;
+        }
+
+        html.dark-theme .app-boot-card {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(32, 36, 40, 0.94);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+        }
+
+        html.dark-theme .app-boot-spinner {
+            border-color: rgba(255, 255, 255, 0.16);
+            border-top-color: #8ee8ae;
+        }
+
+        html.dark-theme .app-boot-detail {
+            color: #aeb7c0;
+        }
+
+        .app-boot-retry {
+            display: none;
+            margin: 16px auto 0;
+            border: 0;
+            border-radius: 7px;
+            padding: 9px 16px;
+            background: #4cba78;
+            color: #102018;
+            font: 600 13px/1 Inter, sans-serif;
+            cursor: pointer;
+        }
+
+        .app-boot-state.is-ready { opacity: 0; pointer-events: none; }
+        .app-boot-state.is-error .app-boot-spinner { display: none; }
+        .app-boot-state.is-error .app-boot-retry { display: inline-block; }
+
+        #app .auth-container.page-transition-enter-from,
+        #app .auth-container.page-transition-enter-active,
+        #app .auth-container.page-transition-enter-to {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+
+        @keyframes app-boot-spin { to { transform: rotate(360deg); } }
+        .guest-browse-btn {
+            margin-top: 12px;
+        }
+
+        @media (max-width: 640px) {
+            .public-compliance-footer {
+                padding: 4px 8px 6px;
+                font-size: 9px;
+            }
+
+
+            .legal-dialog-header {
+                padding: 14px 16px;
+            }
+
+            .legal-dialog-content {
+                padding: 16px;
+            }
+        }
+    </style>
+    
+  <script type="module" crossorigin src="/theme/Xboard/static/index-BdEcuWyr.js"></script>
+  <link rel="modulepreload" crossorigin href="/theme/Xboard/static/vendor-BLCrw5W-.js">
+  <link rel="stylesheet" crossorigin href="/theme/Xboard/static/vendor-BgDCIyLK.css">
+</head>
+<body>
+<div id="app"></div>
+<div class="app-boot-state" id="appBootState" role="status" aria-live="polite">
+    <div class="app-boot-card">
+        <div class="app-boot-spinner" aria-hidden="true"></div>
+        <p class="app-boot-title" id="appBootTitle">正在加载登录页面</p>
+        <p class="app-boot-detail" id="appBootDetail">正在准备页面内容，请稍候。</p>
+        <button type="button" class="app-boot-retry" onclick="location.reload()">重新加载</button>
+    </div>
+</div>
+<script>
+    (() => {
+        let finished = false;
+        const hash = location.hash;
+        const isLanding = hash.startsWith('#/landing');
+        const isAuthRoute = /^#\/(?:login|register|forgot-password|reset)(?:[/?]|$)/i.test(hash);
+        const showFailure = () => {
+            if (finished || !document.getElementById('appBootState')) return;
+            const state = document.getElementById('appBootState');
+            state.classList.add('is-error');
+            document.getElementById('appBootTitle').textContent = isAuthRoute ? '登录页面加载失败' : '页面加载失败';
+            document.getElementById('appBootDetail').textContent = '请检查网络后重新加载，无需先进入游客模式。';
+        };
+        if (isLanding) {
+            document.getElementById('appBootTitle').textContent = '正在加载首页';
+            document.getElementById('appBootDetail').textContent = '正在准备首页内容，请稍候。';
+        } else if (!isAuthRoute) {
+            document.getElementById('appBootTitle').textContent = '正在加载页面';
+            document.getElementById('appBootDetail').textContent = '正在准备页面内容，请稍候。';
+        }
+        const isVisible = element => {
+            if (!element) return false;
+            const style = window.getComputedStyle(element);
+            return style.display !== 'none'
+                && style.visibility !== 'hidden'
+                && Number.parseFloat(style.opacity || '1') >= 0.95
+                && element.getBoundingClientRect().width > 0
+                && element.getBoundingClientRect().height > 0;
+        };
+        const finish = () => {
+            if (finished) return;
+            const state = document.getElementById('appBootState');
+            const target = isAuthRoute
+                ? document.querySelector('#app .auth-container')
+                : document.querySelector('#app > *');
+            if (!state || !isVisible(target)) {
+                window.requestAnimationFrame(finish);
+                return;
+            }
+            finished = true;
+            state.classList.add('is-ready');
+            window.setTimeout(() => state.remove(), 220);
+        };
+        window.XBOARD_BOOT_FAIL = showFailure;
+        window.requestAnimationFrame(finish);
+        window.setTimeout(showFailure, 15000);
+    })();
+</script>
+<footer class="public-compliance-footer" id="publicComplianceFooter" hidden>
+    <span><a href="#/shop" id="pricingLabel">定价</a> · <button type="button" class="legal-link" data-legal-doc="terms" id="termsLabel">服务条款</button> · <button type="button" class="legal-link" data-legal-doc="privacy" id="privacyLabel">隐私政策</button> · <span id="supportLabel">客服</span>：<a href="mailto:admin@zinc.run">admin@zinc.run</a></span>
+</footer>
+<dialog class="legal-dialog" id="legalDialog" aria-labelledby="legalDialogTitle">
+    <div class="legal-dialog-header">
+        <h2 id="legalDialogTitle"></h2>
+        <button type="button" class="legal-dialog-close" id="legalDialogClose" aria-label="关闭" title="关闭">&times;</button>
+    </div>
+    <div class="legal-dialog-content" id="legalDialogContent"></div>
+</dialog>
+<script>
+    (() => {
+        const footer = document.getElementById('publicComplianceFooter');
+        const dialog = document.getElementById('legalDialog');
+        const dialogTitle = document.getElementById('legalDialogTitle');
+        const dialogContent = document.getElementById('legalDialogContent');
+        const closeButton = document.getElementById('legalDialogClose');
+        let activeDocument = null;
+
+        const legalCopy = {
+            'zh-CN': {
+                pricing: '定价', termsTitle: '服务条款', privacyTitle: '隐私政策', support: '客服', close: '关闭', effective: '生效日期：2026年9月23日',
+                termsIntro: '本条款适用于您购买和使用 ZINC 数字网络连接服务。创建账户、下单或使用服务，即表示您同意本条款及隐私政策。',
+                terms: [
+                    ['1. 账户与资格', '您应具备订立合同的法律能力，并提供准确的账户和账单信息。您需妥善保管账户凭据，并对账户下的活动负责；未经书面许可，不得公开分享、转售或转让订阅链接和访问凭据。'],
+                    ['2. 服务与套餐', 'ZINC 提供有时限的共享网络连接和流量中继资源。套餐页面和结算页面会列明价格、周期、流量、设备限制及可用地区或协议。为保障安全、容量或合规，线路、节点、上游、IP 地址和协议可能调整。'],
+                    ['3. 订单、付款与交付', '付款前会显示最终价格、币种、计费周期、续费状态和支付方式。付款可由 Waffo Pancake 或其他支付服务商处理。数字服务通常在付款确认后数分钟内开通；若 24 小时内未交付，请携订单号联系支持。'],
+                    ['4. 取消与退款', '未付款订单可随时取消。数字服务通常即时交付，已完成且已使用的订单一般不退款，但法律另有规定、未交付、重复或未经授权扣款，或由我们导致且无法及时修复的重大故障除外。退款申请应在相关付款或事件后 7 天内提交。'],
+                    ['5. 合理使用', '不得利用服务违法、侵犯第三方权利、发送垃圾邮件或恶意软件、实施攻击、扫描或未经授权访问、传播禁止内容，或未经许可公开共享或转售凭据。为制止滥用、保护共享基础设施或遵守法律，我们可限制流量、功能或暂停服务。'],
+                    ['6. 可用性与变更', '除套餐明确包含服务等级协议外，我们不保证服务不中断、固定线路、延迟、速率、IP 地理位置或任何第三方平台始终可访问。维护、攻击、上游故障、本地网络及不可控事件可能影响服务。'],
+                    ['7. 责任、暂停与终止', '在法律允许范围内，服务按可用状态提供。对误用、用户配置、第三方封锁或合理控制范围外的故障所致损失，我们不承担间接或后果性责任；累计责任通常不超过受影响订单的付款金额。严重违规、欺诈、拒付或安全风险可能导致暂停或终止。'],
+                    ['8. 更新、适用法律与联系', '我们可因服务、法律或运营变化更新条款，并在网站或账户中通知重大变更。本条款适用中华人民共和国法律，您所在地的强制性消费者保护不受影响。联系邮箱：admin@zinc.run。']
+                ],
+                privacyIntro: '本政策说明 ZINC 在您访问网站、创建账户、购买或使用服务以及联系支持时，如何收集、使用和保护个人信息。',
+                privacy: [
+                    ['1. 收集的信息', '我们可能收集邮箱、账户标识和认证记录；套餐、金额、币种、支付状态和订单号；IP 地址、设备与浏览器信息、登录和流量使用记录、连接时间及安全日志；工单内容，以及会话、偏好和安全所需的 Cookie 或本地存储。我们不保存完整银行卡资料。'],
+                    ['2. 使用目的与依据', '信息用于创建和保护账户、交付服务、处理订单、提供支持、防止欺诈与滥用、维护可靠性、履行税务和法律义务以及发送必要通知。处理依据包括履行合同、法定义务、保障安全运营的合法利益，以及法律要求时的同意。'],
+                    ['3. 共享与支付服务商', '我们不出售个人信息。仅向托管、网络、安全、邮件、客服、分析、税务和支付服务商披露提供服务所必需的信息。Waffo Pancake 等支付服务商按其自身隐私条款处理结算和支付数据。法律要求或保护用户和基础设施时也可能披露。'],
+                    ['4. 跨境处理与保留', '服务商可能在您所在国家或地区以外处理信息；法律要求时，我们会采用合同或其他认可的跨境保障。账户、交易、运营、安全和支持记录仅在履约、排障、防滥用及满足税务、会计和法律要求所需期间保存。'],
+                    ['5. 安全', '我们采用传输加密、访问控制、凭据保护、监控和受限管理权限。任何系统都无法绝对安全，请使用唯一密码，并在怀疑账户被未经授权访问时及时联系我们。'],
+                    ['6. 您的权利与 Cookie', '依适用法律，您可申请访问、更正、删除、限制处理或获取信息副本，也可反对特定处理、撤回同意或关闭账户。必要的 Cookie 和本地存储用于登录、安全及语言偏好；阻止它们可能影响账户功能。'],
+                    ['7. 未成年人、更新与联系', '服务不面向 18 岁以下未成年人。我们可因法律、技术或服务变化更新本政策，并公布新的生效日期。隐私及支持请求请发送至 admin@zinc.run。']
+                ]
+            },
+            'zh-TW': {
+                pricing: '定價', termsTitle: '服務條款', privacyTitle: '隱私政策', support: '客服', close: '關閉', effective: '生效日期：2026年9月23日',
+                termsIntro: '本條款適用於您購買及使用 ZINC 數位網路連線服務。建立帳戶、下單或使用服務，即表示您同意本條款及隱私政策。',
+                terms: [
+                    ['1. 帳戶與資格', '您應具備訂立合約的法律能力，並提供正確的帳戶及帳單資料。您須妥善保管帳戶憑證並對帳戶活動負責；未經書面許可，不得公開分享、轉售或轉讓訂閱連結及存取憑證。'],
+                    ['2. 服務與方案', 'ZINC 提供有期限的共享網路連線及流量中繼資源。方案與結帳頁面會列明價格、期間、流量、裝置限制及可用地區或協定。為維護安全、容量或合規，線路、節點、上游、IP 位址及協定可能調整。'],
+                    ['3. 訂單、付款與交付', '付款前會顯示最終價格、幣別、計費期間、續訂狀態及付款方式。付款可由 Waffo Pancake 或其他付款服務商處理。數位服務通常於付款確認後數分鐘內開通；若 24 小時內未交付，請攜訂單編號聯絡客服。'],
+                    ['4. 取消與退款', '未付款訂單可隨時取消。數位服務通常即時交付，已完成且已使用的訂單原則上不退款，但法律另有規定、未交付、重複或未授權扣款，或由我們造成且無法及時修復的重大故障除外。請於付款或事件後 7 天內提出申請。'],
+                    ['5. 合理使用', '不得利用服務違法、侵害第三方權利、傳送垃圾郵件或惡意軟體、發動攻擊、掃描或未授權存取、散布禁止內容，或未經許可公開分享或轉售憑證。我們可為制止濫用、保護共享基礎設施或遵守法律而限制或暫停服務。'],
+                    ['6. 可用性與變更', '除方案明確包含服務等級協議外，我們不保證服務不中斷、固定線路、延遲、速率、IP 地理位置或任何第三方平台持續可用。維護、攻擊、上游故障、本地網路及不可控事件可能影響服務。'],
+                    ['7. 責任、暫停與終止', '在法律允許範圍內，服務依現況提供。我們不對誤用、使用者設定、第三方封鎖或合理控制範圍外故障造成的間接或衍生損失負責；累計責任通常不超過受影響訂單金額。嚴重違規、詐欺、拒付或安全風險可能導致暫停或終止。'],
+                    ['8. 更新、準據法與聯絡', '我們可因服務、法律或營運變更更新條款，重大變更會於網站或帳戶通知。本條款適用中華人民共和國法律，您所在地的強制消費者保護不受影響。聯絡信箱：admin@zinc.run。']
+                ],
+                privacyIntro: '本政策說明 ZINC 在您瀏覽網站、建立帳戶、購買或使用服務以及聯絡客服時，如何蒐集、使用及保護個人資料。',
+                privacy: [
+                    ['1. 蒐集的資料', '我們可能蒐集電子郵件、帳戶識別及驗證紀錄；方案、金額、幣別、付款狀態及訂單編號；IP 位址、裝置與瀏覽器資料、登入與流量紀錄、連線時間及安全日誌；客服內容，以及工作階段、偏好和安全所需的 Cookie 或本機儲存。我們不保存完整卡片資料。'],
+                    ['2. 使用目的與依據', '資料用於建立及保護帳戶、交付服務、處理訂單、提供支援、防止詐欺與濫用、維持可靠性、履行稅務及法律義務，以及傳送必要通知。處理依據包括履行合約、法定義務、保障安全營運的合法利益及法律要求時的同意。'],
+                    ['3. 分享與付款服務商', '我們不出售個人資料。僅向主機、網路、安全、郵件、客服、分析、稅務及付款服務商揭露提供服務所需資料。Waffo Pancake 等付款服務商依其自身隱私條款處理結帳及付款資料。'],
+                    ['4. 跨境處理與保存', '服務商可能在您所在國家或地區以外處理資料；法律要求時，我們會採取合約或其他認可保障。帳戶、交易、營運、安全及客服紀錄僅在履約、排錯、防濫用以及滿足稅務、會計與法律要求所需期間保存。'],
+                    ['5. 安全', '我們採用傳輸加密、存取控制、憑證保護、監控及受限管理權限。任何系統都無法絕對安全，請使用獨立密碼，若懷疑帳戶遭未授權存取請立即聯絡我們。'],
+                    ['6. 您的權利與 Cookie', '依適用法律，您可申請存取、更正、刪除、限制處理或取得資料副本，也可反對特定處理、撤回同意或關閉帳戶。必要 Cookie 與本機儲存用於登入、安全及語言偏好；封鎖它們可能影響功能。'],
+                    ['7. 未成年人、更新與聯絡', '服務不以 18 歲以下未成年人為對象。我們可因法律、技術或服務變更更新本政策並公布新生效日期。隱私與客服請寄至 admin@zinc.run。']
+                ]
+            },
+            'en-US': {
+                pricing: 'Pricing', termsTitle: 'Terms of Service', privacyTitle: 'Privacy Policy', support: 'Support', close: 'Close', effective: 'Effective date: September 23, 2026',
+                termsIntro: 'These Terms govern your purchase and use of ZINC digital network connectivity services. By creating an account, placing an order, or using the service, you agree to these Terms and the Privacy Policy.',
+                terms: [
+                    ['1. Accounts and eligibility', 'You must have legal capacity to contract and provide accurate account and billing information. You are responsible for your credentials and account activity. Subscription links and access credentials may not be publicly shared, resold, or transferred without written permission.'],
+                    ['2. Service and plans', 'ZINC provides time-limited access to shared network connectivity and traffic relay resources. Plan and checkout pages state price, period, traffic, device limits, and available regions or protocols. Routes, nodes, upstreams, IP addresses, and protocols may change for security, capacity, or compliance.'],
+                    ['3. Orders, payment, and delivery', 'The final price, currency, billing period, renewal status, and payment method are shown before payment. Waffo Pancake or another provider may process payment. Digital access is normally activated within minutes after confirmation. Contact support with the order number if delivery has not occurred within 24 hours.'],
+                    ['4. Cancellation and refunds', 'Unpaid orders may be cancelled at any time. Because digital access is normally delivered immediately, completed and used orders are generally non-refundable, except where law requires or for non-delivery, duplicate or unauthorized charges, or a material failure caused by us that cannot be remedied. Submit requests within 7 days.'],
+                    ['5. Acceptable use', 'Do not use the service to break the law, infringe rights, send spam or malware, attack, scan, gain unauthorized access, distribute prohibited content, or share or resell credentials without permission. We may restrict traffic, features, or access to stop abuse, protect shared infrastructure, or comply with law.'],
+                    ['6. Availability and changes', 'Unless a plan expressly includes an SLA, we do not guarantee uninterrupted service, fixed routing, latency, speed, IP location, reputation, or access to any third-party platform. Maintenance, attacks, upstream failures, local networks, and events outside reasonable control may affect service.'],
+                    ['7. Liability, suspension, and termination', 'To the extent permitted by law, service is provided as available. We are not liable for indirect or consequential loss caused by misuse, user configuration, third-party blocking, or events outside reasonable control. Aggregate liability is normally limited to the affected order amount. Serious breach, fraud, reversal, or security risk may result in suspension or termination.'],
+                    ['8. Updates, governing law, and contact', 'We may update these Terms for service, legal, or operational changes and will notify material changes through the website or account. The laws of the People’s Republic of China apply, without limiting mandatory consumer rights where you live. Contact: admin@zinc.run.']
+                ],
+                privacyIntro: 'This Policy explains how ZINC collects, uses, and protects personal information when you visit the website, create an account, buy or use services, or contact support.',
+                privacy: [
+                    ['1. Information collected', 'We may collect email, account identifiers and authentication records; plan, amount, currency, payment status and order number; IP address, device and browser data, login and usage records, connection times and security logs; support content; and cookies or local storage needed for sessions, preferences, and security. We do not store full payment-card details.'],
+                    ['2. Purposes and legal grounds', 'Information is used to create and secure accounts, deliver services, process orders, provide support, prevent fraud and abuse, maintain reliability, meet tax and legal duties, and send essential notices. Grounds include contract performance, legal obligations, legitimate security and operational interests, and consent where required.'],
+                    ['3. Sharing and payment providers', 'We do not sell personal information. We share only what is necessary with hosting, network, security, email, support, analytics, tax, and payment providers. Waffo Pancake and other payment providers process checkout and payment data under their own privacy terms. Disclosure may also occur when required by law or to protect users and infrastructure.'],
+                    ['4. International processing and retention', 'Providers may process data outside your country. Where required, we use contractual or other recognized safeguards. Account, transaction, operational, security, and support records are retained only as needed to deliver services, troubleshoot, prevent abuse, and meet tax, accounting, and legal requirements.'],
+                    ['5. Security', 'We use encryption in transit, access controls, credential protection, monitoring, and restricted administrative access. No system is completely secure. Use a unique password and contact us promptly if you suspect unauthorized access.'],
+                    ['6. Your rights and cookies', 'Subject to applicable law, you may request access, correction, deletion, restriction, or a copy of your information; object to processing; withdraw consent; or close your account. Essential cookies and local storage support login, security, and language preferences. Blocking them may prevent account features from working.'],
+                    ['7. Children, updates, and contact', 'The service is not directed to anyone under 18. We may update this Policy for legal, technical, or service changes and will publish a new effective date. Privacy and support requests: admin@zinc.run.']
+                ]
+            },
+            'ja-JP': {
+                pricing: '料金', termsTitle: '利用規約', privacyTitle: 'プライバシーポリシー', support: 'サポート', close: '閉じる', effective: '施行日：2026年9月23日',
+                termsIntro: '本規約は ZINC のデジタルネットワーク接続サービスの購入および利用に適用されます。アカウント作成、注文または利用により、本規約とプライバシーポリシーに同意したものとみなされます。',
+                terms: [
+                    ['1. アカウントと利用資格', '契約を締結できる法的能力を有し、正確なアカウント情報と請求情報を提供してください。認証情報とアカウント上の活動は利用者の責任です。書面による許可なく、購読リンクやアクセス情報を公開、再販売、譲渡できません。'],
+                    ['2. サービスとプラン', 'ZINC は期間限定の共有ネットワーク接続およびトラフィック中継資源を提供します。料金、期間、通信量、端末制限、利用可能な地域またはプロトコルはプランおよび決済画面に表示されます。安全性、容量、法令遵守のため構成が変更される場合があります。'],
+                    ['3. 注文、支払い、提供', '支払い前に最終価格、通貨、請求期間、更新条件、支払い方法を表示します。支払いは Waffo Pancake などが処理する場合があります。通常は決済確認後数分で提供されます。24時間以内に提供されない場合は注文番号を添えてご連絡ください。'],
+                    ['4. 解約と返金', '未払い注文はいつでも取り消せます。デジタルサービスは通常即時提供されるため、利用済み注文は原則返金されません。ただし法令上必要な場合、未提供、重複・不正請求、または当社が解決できない重大障害は除きます。7日以内に申請してください。'],
+                    ['5. 適正利用', '違法行為、権利侵害、スパムやマルウェア、攻撃、スキャン、不正アクセス、禁止コンテンツ、無許可の認証情報共有・再販売に利用してはなりません。不正利用の防止、基盤保護、法令遵守のため制限または停止する場合があります。'],
+                    ['6. 可用性と変更', 'SLA が明記されない限り、無停止運用、固定経路、遅延、速度、IP の所在地・評判、第三者サービスへの接続を保証しません。保守、攻撃、上流障害、地域ネットワーク、不可抗力が影響する場合があります。'],
+                    ['7. 責任、停止、終了', '法令の範囲内でサービスは現状有姿で提供されます。誤用、利用者設定、第三者による遮断、合理的支配外の事象による間接損害等には責任を負いません。責任総額は通常、対象注文額を上限とします。重大違反、不正、支払取消、安全上の危険は停止または終了の対象です。'],
+                    ['8. 更新、準拠法、連絡先', 'サービス、法律、運用上の変更に応じ規約を更新し、重要な変更はウェブサイトまたはアカウントで通知します。中華人民共和国法を準拠法とし、居住地の強行的消費者保護は妨げません。連絡先：admin@zinc.run。']
+                ],
+                privacyIntro: '本ポリシーは、ウェブサイト利用、アカウント作成、購入・利用、サポートへの連絡時に ZINC が個人情報をどのように収集、利用、保護するかを説明します。',
+                privacy: [
+                    ['1. 収集する情報', 'メールアドレス、アカウント識別子と認証記録、プラン・金額・通貨・支払状況・注文番号、IP アドレス、端末・ブラウザ情報、ログイン・通信量・接続時刻・セキュリティログ、サポート内容、セッションや設定に必要な Cookie とローカルストレージを収集する場合があります。カード番号全体は保存しません。'],
+                    ['2. 利用目的と根拠', 'アカウントの作成・保護、サービス提供、注文処理、サポート、不正防止、信頼性維持、税務・法的義務、重要通知に利用します。根拠は契約履行、法的義務、安全な運営上の正当な利益、必要な場合の同意です。'],
+                    ['3. 共有と決済事業者', '個人情報を販売しません。ホスティング、ネットワーク、安全、メール、サポート、分析、税務、決済事業者に必要な範囲のみ共有します。Waffo Pancake などは各社の方針に基づき決済情報を処理します。'],
+                    ['4. 国際処理と保存期間', '事業者が国外で情報を処理する場合があります。必要に応じ契約等の保護措置を講じます。記録はサービス提供、障害対応、不正防止、税務・会計・法令上必要な期間のみ保存します。'],
+                    ['5. セキュリティ', '通信暗号化、アクセス制御、認証情報保護、監視、管理権限の制限を行います。完全に安全なシステムはありません。固有のパスワードを使用し、不正アクセスが疑われる場合は速やかにご連絡ください。'],
+                    ['6. 権利と Cookie', '適用法に従い、閲覧、訂正、削除、処理制限、情報の写し、異議、同意撤回、アカウント閉鎖を請求できます。必須 Cookie とローカルストレージはログイン、安全、言語設定に使用され、遮断すると機能しない場合があります。'],
+                    ['7. 未成年者、更新、連絡先', '本サービスは18歳未満を対象としていません。法律、技術、サービス変更に応じて更新し、新しい施行日を掲載します。連絡先：admin@zinc.run。']
+                ]
+            },
+            'ko-KR': {
+                pricing: '요금', termsTitle: '서비스 약관', privacyTitle: '개인정보 처리방침', support: '고객지원', close: '닫기', effective: '시행일: 2026년 9월 23일',
+                termsIntro: '본 약관은 ZINC 디지털 네트워크 연결 서비스의 구매 및 이용에 적용됩니다. 계정 생성, 주문 또는 서비스 이용 시 본 약관과 개인정보 처리방침에 동의한 것으로 봅니다.',
+                terms: [
+                    ['1. 계정 및 자격', '계약을 체결할 법적 능력이 있어야 하며 정확한 계정 및 결제 정보를 제공해야 합니다. 인증정보와 계정 활동에 대한 책임은 이용자에게 있습니다. 서면 허가 없이 구독 링크나 접근정보를 공개, 재판매 또는 양도할 수 없습니다.'],
+                    ['2. 서비스 및 요금제', 'ZINC는 기간이 정해진 공유 네트워크 연결 및 트래픽 중계 자원을 제공합니다. 가격, 기간, 트래픽, 기기 제한, 이용 가능한 지역 또는 프로토콜은 요금제와 결제 화면에 표시됩니다. 보안, 용량 또는 규정 준수를 위해 경로, 노드, 상위 사업자, IP 및 프로토콜이 변경될 수 있습니다.'],
+                    ['3. 주문, 결제 및 제공', '결제 전에 최종 가격, 통화, 청구 기간, 갱신 상태 및 결제수단을 표시합니다. 결제는 Waffo Pancake 등이 처리할 수 있습니다. 보통 결제 확인 후 수분 내에 제공되며, 24시간 이내 제공되지 않으면 주문번호와 함께 문의해 주세요.'],
+                    ['4. 취소 및 환불', '미결제 주문은 언제든 취소할 수 있습니다. 디지털 서비스는 즉시 제공되므로 사용된 주문은 원칙적으로 환불되지 않습니다. 다만 법률상 필요한 경우, 미제공, 중복·무단 결제 또는 당사가 해결하지 못한 중대한 장애는 예외입니다. 7일 이내에 신청해야 합니다.'],
+                    ['5. 허용되는 이용', '불법행위, 권리침해, 스팸·악성코드, 공격, 스캔, 무단접근, 금지 콘텐츠, 허가 없는 인증정보 공유나 재판매에 사용할 수 없습니다. 남용 방지, 공유 인프라 보호 또는 법률 준수를 위해 트래픽이나 접근을 제한 또는 중지할 수 있습니다.'],
+                    ['6. 가용성 및 변경', '요금제에 SLA가 명시되지 않는 한 무중단, 고정 경로, 지연, 속도, IP 위치·평판 또는 제3자 플랫폼 접근을 보장하지 않습니다. 유지보수, 공격, 상위망 장애, 지역망 및 통제할 수 없는 사건이 서비스에 영향을 줄 수 있습니다.'],
+                    ['7. 책임, 중지 및 종료', '법이 허용하는 범위에서 서비스는 이용 가능한 상태로 제공됩니다. 오용, 사용자 설정, 제3자 차단 또는 합리적 통제 밖의 사건으로 인한 간접·결과적 손해에 책임지지 않으며, 총 책임은 일반적으로 해당 주문금액으로 제한됩니다. 중대한 위반, 사기, 결제 취소 또는 보안 위험은 중지나 종료 사유가 됩니다.'],
+                    ['8. 변경, 준거법 및 연락처', '서비스, 법률 또는 운영 변경에 따라 약관을 개정하며 중요한 변경은 웹사이트나 계정으로 알립니다. 중화인민공화국 법률을 적용하되 거주지의 강행 소비자보호법은 제한하지 않습니다. 문의: admin@zinc.run.']
+                ],
+                privacyIntro: '본 방침은 웹사이트 방문, 계정 생성, 서비스 구매·이용 또는 고객지원 문의 시 ZINC가 개인정보를 수집, 이용 및 보호하는 방법을 설명합니다.',
+                privacy: [
+                    ['1. 수집 정보', '이메일, 계정 식별자와 인증기록, 요금제·금액·통화·결제상태·주문번호, IP 주소, 기기와 브라우저 정보, 로그인·사용량·접속시간·보안로그, 지원 내용, 세션·환경설정·보안에 필요한 쿠키 또는 로컬 저장소를 수집할 수 있습니다. 전체 카드정보는 저장하지 않습니다.'],
+                    ['2. 이용 목적과 법적 근거', '계정 생성과 보호, 서비스 제공, 주문 처리, 지원, 사기·남용 방지, 신뢰성 유지, 세금·법적 의무 및 필수 알림에 이용합니다. 계약 이행, 법적 의무, 안전한 운영을 위한 정당한 이익 및 필요한 경우 동의를 근거로 합니다.'],
+                    ['3. 공유 및 결제 사업자', '개인정보를 판매하지 않습니다. 호스팅, 네트워크, 보안, 이메일, 지원, 분석, 세금 및 결제 사업자에게 필요한 정보만 공유합니다. Waffo Pancake 등은 자체 방침에 따라 결제 데이터를 처리합니다.'],
+                    ['4. 국외 처리 및 보유', '사업자가 이용자 국가 밖에서 정보를 처리할 수 있으며 필요한 경우 계약 등 보호조치를 사용합니다. 기록은 서비스 제공, 문제 해결, 남용 방지 및 세금·회계·법률 요건에 필요한 기간만 보유합니다.'],
+                    ['5. 보안', '전송 암호화, 접근통제, 인증정보 보호, 모니터링 및 제한된 관리권한을 사용합니다. 완전히 안전한 시스템은 없으므로 고유한 비밀번호를 사용하고 무단접근이 의심되면 즉시 알려주세요.'],
+                    ['6. 권리 및 쿠키', '관련 법률에 따라 열람, 정정, 삭제, 처리제한, 사본, 이의제기, 동의철회 또는 계정폐쇄를 요청할 수 있습니다. 필수 쿠키와 로컬 저장소는 로그인, 보안 및 언어설정에 사용되며 차단 시 기능이 제한될 수 있습니다.'],
+                    ['7. 미성년자, 변경 및 연락처', '서비스는 18세 미만을 대상으로 하지 않습니다. 법률, 기술 또는 서비스 변경에 따라 방침을 개정하고 새 시행일을 게시합니다. 문의: admin@zinc.run.']
+                ]
+            },
+            'ru-RU': {
+                pricing: 'Тарифы', termsTitle: 'Условия использования', privacyTitle: 'Политика конфиденциальности', support: 'Поддержка', close: 'Закрыть', effective: 'Дата вступления в силу: 23 сентября 2026 г.',
+                termsIntro: 'Настоящие Условия регулируют покупку и использование цифровых сетевых услуг ZINC. Создавая аккаунт, оформляя заказ или используя сервис, вы соглашаетесь с Условиями и Политикой конфиденциальности.',
+                terms: [
+                    ['1. Аккаунт и правоспособность', 'Вы должны иметь право заключать договор и предоставлять точные данные аккаунта и оплаты. Вы отвечаете за учетные данные и действия в аккаунте. Без письменного разрешения нельзя публично передавать, перепродавать или уступать ссылки подписки и данные доступа.'],
+                    ['2. Сервис и тарифы', 'ZINC предоставляет ограниченный по времени доступ к общим ресурсам сетевого подключения и ретрансляции трафика. Цена, срок, трафик, лимиты устройств и доступные регионы или протоколы указаны на странице тарифа и оплаты. Маршруты, узлы, провайдеры, IP и протоколы могут меняться ради безопасности, емкости или соблюдения закона.'],
+                    ['3. Заказы, оплата и предоставление', 'До оплаты показываются итоговая цена, валюта, расчетный период, продление и способ оплаты. Платеж может обрабатывать Waffo Pancake или другой оператор. Доступ обычно активируется через несколько минут после подтверждения. Если его нет в течение 24 часов, обратитесь в поддержку с номером заказа.'],
+                    ['4. Отмена и возврат', 'Неоплаченный заказ можно отменить в любое время. Поскольку цифровой доступ обычно предоставляется сразу, использованные заказы обычно не возвращаются, кроме случаев, требуемых законом, непредоставления, двойного или несанкционированного списания либо существенной неисправности по нашей вине, которую невозможно устранить. Запрос подается в течение 7 дней.'],
+                    ['5. Допустимое использование', 'Запрещено использовать сервис для нарушения закона или прав, спама, вредоносных программ, атак, сканирования, несанкционированного доступа, запрещенного контента либо передачи или перепродажи учетных данных без разрешения. Для пресечения злоупотреблений, защиты инфраструктуры или соблюдения закона доступ может быть ограничен.'],
+                    ['6. Доступность и изменения', 'Если тариф прямо не включает SLA, мы не гарантируем бесперебойность, фиксированный маршрут, задержку, скорость, геолокацию или репутацию IP и доступ к сторонним платформам. Техработы, атаки, сбои провайдеров, местные сети и неподконтрольные события могут влиять на сервис.'],
+                    ['7. Ответственность, приостановка и прекращение', 'В пределах закона сервис предоставляется по мере доступности. Мы не отвечаем за косвенный ущерб из-за неправильного использования, настроек пользователя, блокировок третьих лиц или неподконтрольных событий. Общая ответственность обычно ограничена суммой затронутого заказа. Серьезное нарушение, мошенничество, отзыв платежа или риск безопасности могут повлечь блокировку.'],
+                    ['8. Обновления, право и контакты', 'Мы можем обновлять Условия из-за изменений сервиса, закона или работы и сообщим о существенных изменениях на сайте или в аккаунте. Применяется право КНР без ограничения обязательных прав потребителей по месту проживания. Контакт: admin@zinc.run.']
+                ],
+                privacyIntro: 'Политика объясняет, как ZINC собирает, использует и защищает персональные данные при посещении сайта, создании аккаунта, покупке или использовании услуг и обращении в поддержку.',
+                privacy: [
+                    ['1. Собираемые данные', 'Могут собираться email, идентификаторы и записи аутентификации; тариф, сумма, валюта, статус оплаты и номер заказа; IP, устройство и браузер, входы, объем трафика, время соединения и журналы безопасности; обращения в поддержку; cookies и локальное хранилище для сессий, настроек и безопасности. Полные данные карты не хранятся.'],
+                    ['2. Цели и основания', 'Данные нужны для создания и защиты аккаунтов, оказания услуг, обработки заказов, поддержки, предотвращения мошенничества и злоупотреблений, надежности, налоговых и правовых обязанностей и важных уведомлений. Основания: исполнение договора, закон, законный интерес безопасной работы и согласие, когда оно требуется.'],
+                    ['3. Передача и платежные операторы', 'Мы не продаем персональные данные. Необходимые сведения передаются поставщикам хостинга, сети, безопасности, почты, поддержки, аналитики, налоговых и платежных услуг. Waffo Pancake и другие операторы обрабатывают платежные данные по собственным правилам.'],
+                    ['4. Международная обработка и хранение', 'Поставщики могут обрабатывать данные за пределами вашей страны; при необходимости применяются договорные или иные признанные гарантии. Записи хранятся лишь столько, сколько нужно для оказания услуг, устранения проблем, защиты от злоупотреблений и выполнения налоговых, бухгалтерских и правовых требований.'],
+                    ['5. Безопасность', 'Используются шифрование при передаче, контроль доступа, защита учетных данных, мониторинг и ограниченные права администраторов. Абсолютно безопасных систем нет; используйте уникальный пароль и сообщайте о подозрении на посторонний доступ.'],
+                    ['6. Ваши права и cookies', 'По применимому закону вы можете запросить доступ, исправление, удаление, ограничение, копию данных, возразить против обработки, отозвать согласие или закрыть аккаунт. Обязательные cookies и локальное хранилище нужны для входа, безопасности и языка; их блокировка может нарушить функции.'],
+                    ['7. Дети, изменения и контакты', 'Сервис не предназначен для лиц младше 18 лет. Мы можем обновлять Политику при изменении закона, технологий или сервиса и публикуем новую дату. Запросы: admin@zinc.run.']
+                ]
+            },
+            'fa-IR': {
+                pricing: 'قیمت‌ها', termsTitle: 'شرایط استفاده', privacyTitle: 'سیاست حریم خصوصی', support: 'پشتیبانی', close: 'بستن', effective: 'تاریخ اجرا: ۲۳ سپتامبر ۲۰۲۶',
+                termsIntro: 'این شرایط بر خرید و استفاده شما از خدمات اتصال شبکه دیجیتال ZINC حاکم است. با ایجاد حساب، ثبت سفارش یا استفاده از خدمات، این شرایط و سیاست حریم خصوصی را می‌پذیرید.',
+                terms: [
+                    ['۱. حساب و صلاحیت', 'باید اهلیت قانونی انعقاد قرارداد داشته و اطلاعات صحیح حساب و صورتحساب ارائه کنید. مسئول حفاظت از اطلاعات ورود و فعالیت‌های حساب هستید. بدون اجازه کتبی، انتشار عمومی، فروش مجدد یا انتقال پیوند اشتراک و اطلاعات دسترسی مجاز نیست.'],
+                    ['۲. خدمات و طرح‌ها', 'ZINC دسترسی مدت‌دار به منابع مشترک اتصال شبکه و انتقال ترافیک ارائه می‌دهد. قیمت، مدت، حجم، محدودیت دستگاه و مناطق یا پروتکل‌های موجود در صفحه طرح و پرداخت درج می‌شود. مسیرها، گره‌ها، ارائه‌دهندگان بالادستی، IP و پروتکل‌ها ممکن است برای امنیت، ظرفیت یا رعایت قانون تغییر کنند.'],
+                    ['۳. سفارش، پرداخت و تحویل', 'پیش از پرداخت، قیمت نهایی، ارز، دوره صورتحساب، وضعیت تمدید و روش پرداخت نمایش داده می‌شود. پرداخت ممکن است توسط Waffo Pancake یا ارائه‌دهنده دیگری پردازش شود. دسترسی معمولاً چند دقیقه پس از تأیید فعال می‌شود؛ اگر تا ۲۴ ساعت تحویل نشد، با شماره سفارش تماس بگیرید.'],
+                    ['۴. لغو و بازپرداخت', 'سفارش پرداخت‌نشده هر زمان قابل لغو است. چون دسترسی دیجیتال معمولاً فوری تحویل می‌شود، سفارش تکمیل و استفاده‌شده عموماً قابل بازپرداخت نیست؛ مگر الزام قانونی، عدم تحویل، برداشت تکراری یا غیرمجاز، یا نقص اساسی ناشی از ما که قابل رفع نباشد. درخواست را ظرف ۷ روز ارسال کنید.'],
+                    ['۵. استفاده مجاز', 'استفاده برای نقض قانون یا حقوق دیگران، هرزنامه، بدافزار، حمله، اسکن، دسترسی غیرمجاز، محتوای ممنوع یا اشتراک و فروش اطلاعات ورود بدون اجازه ممنوع است. برای توقف سوءاستفاده، حفاظت از زیرساخت مشترک یا رعایت قانون می‌توانیم ترافیک یا دسترسی را محدود کنیم.'],
+                    ['۶. دسترس‌پذیری و تغییرات', 'مگر آنکه طرح صراحتاً SLA داشته باشد، کارکرد بدون وقفه، مسیر ثابت، تأخیر، سرعت، موقعیت یا اعتبار IP و دسترسی به پلتفرم‌های ثالث تضمین نمی‌شود. نگهداری، حملات، خرابی بالادستی، شبکه محلی و رویدادهای خارج از کنترل می‌تواند خدمات را متاثر کند.'],
+                    ['۷. مسئولیت، تعلیق و خاتمه', 'تا حد مجاز قانونی، خدمات بر مبنای موجود ارائه می‌شود. در برابر خسارت غیرمستقیم ناشی از استفاده نادرست، تنظیمات کاربر، مسدودسازی ثالث یا عوامل خارج از کنترل مسئول نیستیم. مسئولیت کل معمولاً به مبلغ سفارش مربوط محدود است. نقض جدی، تقلب، برگشت پرداخت یا خطر امنیتی می‌تواند موجب تعلیق یا خاتمه شود.'],
+                    ['۸. به‌روزرسانی، قانون و تماس', 'ممکن است شرایط را به دلیل تغییرات خدمات، قانون یا عملیات به‌روز کنیم و تغییرات مهم را در سایت یا حساب اطلاع دهیم. قوانین جمهوری خلق چین اعمال می‌شود، بدون محدود کردن حمایت‌های اجباری مصرف‌کننده در محل اقامت شما. تماس: admin@zinc.run.']
+                ],
+                privacyIntro: 'این سیاست توضیح می‌دهد ZINC هنگام بازدید از سایت، ایجاد حساب، خرید یا استفاده از خدمات و تماس با پشتیبانی چگونه اطلاعات شخصی را جمع‌آوری، استفاده و محافظت می‌کند.',
+                privacy: [
+                    ['۱. اطلاعات جمع‌آوری‌شده', 'ممکن است ایمیل، شناسه حساب و سوابق احراز هویت؛ طرح، مبلغ، ارز، وضعیت پرداخت و شماره سفارش؛ IP، دستگاه و مرورگر، ورودها، مصرف، زمان اتصال و گزارش امنیتی؛ محتوای پشتیبانی؛ و کوکی یا ذخیره‌سازی محلی لازم برای نشست، تنظیمات و امنیت جمع شود. اطلاعات کامل کارت ذخیره نمی‌شود.'],
+                    ['۲. اهداف و مبانی قانونی', 'اطلاعات برای ایجاد و حفاظت حساب، ارائه خدمات، پردازش سفارش، پشتیبانی، جلوگیری از تقلب و سوءاستفاده، حفظ قابلیت اطمینان، تکالیف مالیاتی و قانونی و اعلان‌های ضروری استفاده می‌شود. مبانی شامل اجرای قرارداد، الزام قانونی، منافع مشروع امنیت و عملیات و رضایت در موارد لازم است.'],
+                    ['۳. اشتراک و ارائه‌دهندگان پرداخت', 'اطلاعات شخصی فروخته نمی‌شود. فقط داده لازم با ارائه‌دهندگان میزبانی، شبکه، امنیت، ایمیل، پشتیبانی، تحلیل، مالیات و پرداخت به اشتراک گذاشته می‌شود. Waffo Pancake و دیگران داده پرداخت را طبق سیاست خود پردازش می‌کنند.'],
+                    ['۴. پردازش بین‌المللی و نگهداری', 'ارائه‌دهندگان ممکن است داده را خارج از کشور شما پردازش کنند و در صورت لزوم از تضمین‌های قراردادی یا شناخته‌شده استفاده می‌کنیم. سوابق فقط تا زمان لازم برای ارائه خدمت، رفع مشکل، جلوگیری از سوءاستفاده و الزامات مالیاتی، حسابداری و قانونی نگهداری می‌شود.'],
+                    ['۵. امنیت', 'از رمزگذاری انتقال، کنترل دسترسی، حفاظت اطلاعات ورود، پایش و دسترسی محدود مدیریتی استفاده می‌کنیم. هیچ سامانه‌ای کاملاً امن نیست؛ رمز عبور یکتا انتخاب کنید و دسترسی غیرمجاز مشکوک را سریعاً گزارش دهید.'],
+                    ['۶. حقوق شما و کوکی‌ها', 'طبق قانون می‌توانید دسترسی، اصلاح، حذف، محدودیت، نسخه اطلاعات، اعتراض، پس‌گرفتن رضایت یا بستن حساب را درخواست کنید. کوکی و ذخیره محلی ضروری برای ورود، امنیت و زبان است و مسدودکردن آن ممکن است امکانات حساب را مختل کند.'],
+                    ['۷. کودکان، تغییرات و تماس', 'خدمات برای افراد زیر ۱۸ سال نیست. ممکن است سیاست را برای تغییرات قانونی، فنی یا خدماتی به‌روز و تاریخ جدید را منتشر کنیم. درخواست‌ها: admin@zinc.run.']
+                ]
+            },
+            'vi-VN': {
+                pricing: 'Bảng giá', termsTitle: 'Điều khoản dịch vụ', privacyTitle: 'Chính sách quyền riêng tư', support: 'Hỗ trợ', close: 'Đóng', effective: 'Ngày hiệu lực: 23 tháng 9 năm 2026',
+                termsIntro: 'Điều khoản này áp dụng cho việc mua và sử dụng dịch vụ kết nối mạng kỹ thuật số ZINC. Khi tạo tài khoản, đặt hàng hoặc sử dụng dịch vụ, bạn đồng ý với Điều khoản và Chính sách quyền riêng tư.',
+                terms: [
+                    ['1. Tài khoản và điều kiện', 'Bạn phải có năng lực pháp lý để ký hợp đồng và cung cấp thông tin tài khoản, thanh toán chính xác. Bạn chịu trách nhiệm về thông tin đăng nhập và hoạt động tài khoản. Không được công khai, bán lại hoặc chuyển giao liên kết thuê bao và thông tin truy cập nếu chưa có phép bằng văn bản.'],
+                    ['2. Dịch vụ và gói', 'ZINC cung cấp quyền truy cập có thời hạn vào tài nguyên kết nối mạng và chuyển tiếp lưu lượng dùng chung. Giá, thời hạn, lưu lượng, giới hạn thiết bị và khu vực hoặc giao thức có sẵn được nêu tại trang gói và thanh toán. Tuyến, nút, nhà cung cấp, IP và giao thức có thể thay đổi vì an ninh, năng lực hoặc tuân thủ.'],
+                    ['3. Đơn hàng, thanh toán và giao dịch vụ', 'Giá cuối cùng, tiền tệ, kỳ tính phí, trạng thái gia hạn và phương thức thanh toán được hiển thị trước khi trả tiền. Waffo Pancake hoặc nhà cung cấp khác có thể xử lý thanh toán. Dịch vụ thường được kích hoạt trong vài phút; nếu chưa giao trong 24 giờ, hãy liên hệ kèm mã đơn hàng.'],
+                    ['4. Hủy và hoàn tiền', 'Đơn chưa thanh toán có thể hủy bất kỳ lúc nào. Do dịch vụ số thường được giao ngay, đơn đã sử dụng thường không được hoàn, trừ khi pháp luật yêu cầu, chưa giao, bị tính phí trùng hoặc trái phép, hay có lỗi nghiêm trọng do chúng tôi không thể khắc phục. Yêu cầu phải gửi trong 7 ngày.'],
+                    ['5. Sử dụng chấp nhận được', 'Không dùng dịch vụ để vi phạm pháp luật hoặc quyền của người khác, gửi thư rác hay mã độc, tấn công, quét, truy cập trái phép, phát tán nội dung cấm, hoặc chia sẻ hay bán thông tin truy cập khi chưa được phép. Chúng tôi có thể hạn chế để ngăn lạm dụng, bảo vệ hạ tầng hoặc tuân thủ pháp luật.'],
+                    ['6. Tính sẵn sàng và thay đổi', 'Trừ khi gói ghi rõ SLA, chúng tôi không bảo đảm hoạt động liên tục, tuyến cố định, độ trễ, tốc độ, vị trí hay uy tín IP hoặc quyền truy cập nền tảng bên thứ ba. Bảo trì, tấn công, lỗi thượng nguồn, mạng địa phương và sự kiện ngoài kiểm soát có thể ảnh hưởng dịch vụ.'],
+                    ['7. Trách nhiệm, đình chỉ và chấm dứt', 'Trong phạm vi pháp luật cho phép, dịch vụ được cung cấp theo tình trạng sẵn có. Chúng tôi không chịu trách nhiệm cho thiệt hại gián tiếp do sử dụng sai, cấu hình người dùng, chặn của bên thứ ba hoặc sự kiện ngoài kiểm soát. Tổng trách nhiệm thường giới hạn ở giá trị đơn bị ảnh hưởng. Vi phạm nghiêm trọng, gian lận, hoàn trả thanh toán hoặc rủi ro an ninh có thể dẫn đến đình chỉ.'],
+                    ['8. Cập nhật, luật áp dụng và liên hệ', 'Chúng tôi có thể cập nhật Điều khoản do thay đổi dịch vụ, pháp luật hoặc vận hành và sẽ thông báo thay đổi quan trọng trên website hoặc tài khoản. Áp dụng pháp luật Cộng hòa Nhân dân Trung Hoa, không hạn chế quyền bảo vệ người tiêu dùng bắt buộc tại nơi bạn cư trú. Liên hệ: admin@zinc.run.']
+                ],
+                privacyIntro: 'Chính sách này giải thích cách ZINC thu thập, sử dụng và bảo vệ thông tin cá nhân khi bạn truy cập website, tạo tài khoản, mua hoặc dùng dịch vụ hay liên hệ hỗ trợ.',
+                privacy: [
+                    ['1. Thông tin thu thập', 'Có thể gồm email, mã tài khoản và hồ sơ xác thực; gói, số tiền, tiền tệ, trạng thái thanh toán và mã đơn; IP, thiết bị và trình duyệt, đăng nhập, mức sử dụng, thời gian kết nối và nhật ký an ninh; nội dung hỗ trợ; cookie hoặc lưu trữ cục bộ cần cho phiên, tùy chọn và bảo mật. Chúng tôi không lưu đầy đủ thông tin thẻ.'],
+                    ['2. Mục đích và cơ sở pháp lý', 'Thông tin được dùng để tạo và bảo vệ tài khoản, cung cấp dịch vụ, xử lý đơn, hỗ trợ, ngăn gian lận và lạm dụng, duy trì độ tin cậy, thực hiện nghĩa vụ thuế và pháp lý và gửi thông báo cần thiết. Cơ sở gồm thực hiện hợp đồng, nghĩa vụ pháp luật, lợi ích hợp pháp về an toàn vận hành và sự đồng ý khi cần.'],
+                    ['3. Chia sẻ và nhà cung cấp thanh toán', 'Chúng tôi không bán thông tin cá nhân. Chỉ dữ liệu cần thiết được chia sẻ với nhà cung cấp lưu trữ, mạng, an ninh, email, hỗ trợ, phân tích, thuế và thanh toán. Waffo Pancake và các nhà cung cấp khác xử lý dữ liệu thanh toán theo chính sách riêng.'],
+                    ['4. Xử lý quốc tế và lưu giữ', 'Nhà cung cấp có thể xử lý dữ liệu ngoài quốc gia của bạn; khi cần, chúng tôi dùng biện pháp bảo vệ theo hợp đồng hoặc được công nhận. Hồ sơ chỉ được giữ trong thời gian cần để cung cấp dịch vụ, xử lý sự cố, ngăn lạm dụng và đáp ứng yêu cầu thuế, kế toán và pháp lý.'],
+                    ['5. Bảo mật', 'Chúng tôi dùng mã hóa khi truyền, kiểm soát truy cập, bảo vệ thông tin đăng nhập, giám sát và giới hạn quyền quản trị. Không hệ thống nào an toàn tuyệt đối; hãy dùng mật khẩu riêng và báo ngay khi nghi ngờ truy cập trái phép.'],
+                    ['6. Quyền của bạn và cookie', 'Theo luật áp dụng, bạn có thể yêu cầu truy cập, sửa, xóa, hạn chế, nhận bản sao, phản đối xử lý, rút lại đồng ý hoặc đóng tài khoản. Cookie và lưu trữ cục bộ thiết yếu phục vụ đăng nhập, an ninh và ngôn ngữ; chặn chúng có thể làm hỏng chức năng.'],
+                    ['7. Trẻ em, cập nhật và liên hệ', 'Dịch vụ không dành cho người dưới 18 tuổi. Chúng tôi có thể cập nhật Chính sách do thay đổi pháp lý, kỹ thuật hoặc dịch vụ và sẽ công bố ngày mới. Yêu cầu: admin@zinc.run.']
+                ]
+            }
+        };
+
+        const languageByLabel = {
+            '简体中文': 'zh-CN', '繁體中文': 'zh-TW', English: 'en-US', '日本語': 'ja-JP',
+            '한국어': 'ko-KR', 'Русский': 'ru-RU', 'فارسی': 'fa-IR', 'Tiếng Việt': 'vi-VN'
+        };
+        const getLanguage = () => {
+            const selectedLabel = document.querySelector('.language-btn img[alt]')?.alt;
+            return languageByLabel[selectedLabel] || (legalCopy[localStorage.getItem('language')] ? localStorage.getItem('language') : 'en-US');
+        };
+        const getCopy = () => legalCopy[getLanguage()];
+
+        const renderDocument = () => {
+            if (!activeDocument) return;
+            const copy = getCopy();
+            const isTerms = activeDocument === 'terms';
+            const title = isTerms ? copy.termsTitle : copy.privacyTitle;
+            const sections = isTerms ? copy.terms : copy.privacy;
+
+            dialogTitle.textContent = title;
+            dialogContent.replaceChildren();
+            const meta = document.createElement('p');
+            meta.className = 'legal-meta';
+            meta.textContent = copy.effective;
+            const intro = document.createElement('p');
+            intro.className = 'legal-intro';
+            intro.textContent = isTerms ? copy.termsIntro : copy.privacyIntro;
+            dialogContent.append(meta, intro);
+            sections.forEach(([heading, body]) => {
+                const sectionHeading = document.createElement('h3');
+                sectionHeading.textContent = heading;
+                const paragraph = document.createElement('p');
+                paragraph.textContent = body;
+                dialogContent.append(sectionHeading, paragraph);
+            });
+            dialog.dir = getLanguage() === 'fa-IR' ? 'rtl' : 'ltr';
+            closeButton.setAttribute('aria-label', copy.close);
+            closeButton.title = copy.close;
+        };
+
+        const renderLabels = () => {
+            const copy = getCopy();
+            document.getElementById('pricingLabel').textContent = copy.pricing;
+            document.getElementById('termsLabel').textContent = copy.termsTitle;
+            document.getElementById('privacyLabel').textContent = copy.privacyTitle;
+            document.getElementById('supportLabel').textContent = copy.support;
+            if (dialog.open) renderDocument();
+
+        };
+
+        document.querySelectorAll('[data-legal-doc]').forEach(button => {
+            button.addEventListener('click', () => {
+                activeDocument = button.dataset.legalDoc;
+                renderDocument();
+                dialog.showModal();
+            });
+        });
+        closeButton.addEventListener('click', () => dialog.close());
+        dialog.addEventListener('click', event => {
+            if (event.target === dialog) dialog.close();
+        });
+
+        const updateFooter = () => {
+            const route = location.hash.replace(/^#\/?/, '').split(/[?&]/, 1)[0];
+            const isLanding = route === '' || route === 'landing';
+            footer.hidden = false;
+            footer.classList.toggle('is-landing', isLanding);
+        };
+
+        updateFooter();
+        renderLabels();
+        window.addEventListener('hashchange', updateFooter);
+        window.addEventListener('languageChanged', renderLabels);
+        new MutationObserver(renderLabels).observe(document.getElementById('app'), { childList: true, subtree: true, attributes: true, attributeFilter: ['alt'] });
+    })();
+</script>
+</body>
+</html>
