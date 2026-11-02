@@ -1,0 +1,9 @@
+FROM security-event/xboard:20261022-opcache
+COPY composer.lock /www/composer.lock
+RUN composer install --no-cache --no-dev --no-security-blocking
+# Keep the customized runtime, dependencies, theme, and trust store.
+COPY app/Protocols/QuantumultX.php /www/app/Protocols/QuantumultX.php
+COPY app/Services/PaymentService.php /www/app/Services/PaymentService.php
+COPY app/Services/Plugin/PluginManager.php /www/app/Services/Plugin/PluginManager.php
+COPY plugins-core/Epay/Plugin.php /www/plugins-core/Epay/Plugin.php
+COPY plugins-core/Mgate/Plugin.php /www/plugins-core/Mgate/Plugin.php
