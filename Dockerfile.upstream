@@ -1,0 +1,9 @@
+FROM security-event/xboard:20261025-upstream
+COPY composer.json composer.lock /www/
+RUN composer install --no-cache --no-dev --no-interaction --no-scripts --no-security-blocking
+# Keep the customized runtime, dependencies, theme, and trust store.
+COPY app/ /www/app/
+COPY database/migrations/ /www/database/migrations/
+COPY plugins-core/Epay/Plugin.php /www/plugins-core/Epay/Plugin.php
+COPY plugins-core/Mgate/Plugin.php /www/plugins-core/Mgate/Plugin.php
+RUN composer dump-autoload --no-dev --no-scripts

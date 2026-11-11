@@ -196,6 +196,16 @@ class ClashMeta extends AbstractProtocol
             }
         }
 
+        // Reuse first available node for the manual-selection hint, so clients can test it normally.
+        foreach ($config['proxies'] as $key => $configuredProxy) {
+            if (($configuredProxy['name'] ?? null) !== '💡建议手动选择节点，保证 IP 稳定' || !isset($proxy[0])) {
+                continue;
+            }
+            $manualProxy = $proxy[0];
+            $manualProxy['name'] = $configuredProxy['name'];
+            $config['proxies'][$key] = $manualProxy;
+            break;
+        }
         $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
         foreach ($config['proxy-groups'] as $k => $v) {
             if (!is_array($config['proxy-groups'][$k]['proxies']))
